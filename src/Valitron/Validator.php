@@ -1216,13 +1216,14 @@ class Validator
      * @param array $rules
      */
     public function mapFieldRules($field_name, $rules){
-        array_map(function($rule) use($field_name){
+        $me = $this;
+        array_map(function($rule) use($field_name, $me){
             //rule must be an array
             $rule = (array)$rule;
             //First element is the name of the rule
             $rule_name = array_shift($rule);
             //Add the field and additional parameters to the rule
-            call_user_func_array(array($this, 'rule'), array_merge(array($rule_name, $field_name), $rule));
+            call_user_func_array(array($me, 'rule'), array_merge(array($rule_name, $field_name), $rule));
         }, (array) $rules);
 
     }
@@ -1233,9 +1234,9 @@ class Validator
      * @param array $rules
      */
     public function mapFieldsRules($rules){
-
-        array_map(function($field_name) use($rules){
-            $this->mapFieldRules($field_name, $rules[$field_name]);
+        $me = $this;
+        array_map(function($field_name) use($rules, $me){
+            $me->mapFieldRules($field_name, $rules[$field_name]);
         }, array_keys($rules));
 
     }
